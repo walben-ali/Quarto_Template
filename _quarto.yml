@@ -1,0 +1,42 @@
+project:
+     type: book
+     output-dir: docs
+
+book:
+     title: "Quarto Template"
+     author: "Waleed A A Ali"
+     chapters:
+          - index.qmd
+          - part: Part_Intro.qmd
+            chapters:
+               - Chap_1.qmd
+     appendices:
+          - App_1.qmd
+     downloads: [pdf,docx,epub]
+
+format:
+     html:
+          theme:
+               light: [flatly,styleL.scss]
+               dark:  [darkly,styleD.scss]
+          respect-user-color-scheme: false
+          mainfont: Computer Modern Roman
+          fontsize: 1rem
+          page-layout: full
+          code-link: true
+          footnotes-hover: true
+          code-line-numbers: true
+          include-in-header: "font-controls.html"
+          lightbox: true
+     pdf:
+          toc: true
+          documentclass: scrreport
+          papersize: a4
+          code-line-numbers: true
+          pdf-engine: pdflatex
+     docx:
+          toc: true
+     epub: default
+
+bibliography: references.bib
+link-citations: true

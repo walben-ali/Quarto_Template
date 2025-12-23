@@ -1,0 +1,7 @@
+:::{.content-hidden}
+{{< include _macros.qmd >}}
+:::
+
+# Appendix 1 {#sec-App1}
+
+Appendix of things.

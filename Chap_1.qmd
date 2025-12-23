@@ -1,0 +1,169 @@
+:::{.content-hidden}
+{{< include _macros.qmd >}}
+:::
+
+# Quarto Template
+
+This is a generic template for generating Quarto documents.
+
+<!-- Headings -->
+
+# Heading
+## Heading
+### Heading
+#### Heading
+##### Heading
+###### Heading {#sec-Heading}
+
+This is how to refernece sections like @sec-Heading or other chapters like @sec-App1.
+
+<!-- Tables -->
+
+| Right | Left | Default | Centre |
+|------:|:-----|---------|:------:|
+|   12  |  12  |    12   |    12  |
+|  123  |  123 |   123   |   123  |
+|    1  |    1 |     1   |     1  |
+
+<!-- Fonts -->
+
+*Italic*
+
+**Bold**
+
+***Bold-italic***
+
+<!-- Callout Blocks -->
+
+:::{.callout-note}
+Note nte
+:::
+
+:::{.callout-warning}
+Warning wrn
+:::
+
+:::{.callout-important}
+Important imp
+:::
+
+:::{.callout-tip}
+Tip tip
+:::
+
+:::{.callout-caution}
+Caution cau
+:::
+
+:::{#nte-BoxLabel .callout-note}
+## Note Box Title
+
+Note with stuff
+:::
+
+Note box with label @nte-BoxLabel.
+
+:::{.callout-caution collapse=true icon=false}
+Collapsible caution with no icon
+:::
+
+> Blockquote
+
+<!-- Theorems etc. -->
+
+:::{#def-SomeDef}
+## Definition
+def
+:::
+
+:::{#thm-SomeThm}
+## Theorem
+thm
+:::
+
+:::{#cor-SomeCor}
+## Corollary
+cor
+:::
+
+:::{#lem-SomeLem}
+## Lemma
+lem
+:::
+
+:::{#prp-SomeProp}
+## Proposition
+prp
+:::
+
+:::{#cnj-SomeConj}
+## Conjecture
+cnj
+:::
+
+:::{#exm-SomeEg}
+## Example
+exm
+:::
+
+:::{#exr-SomeEx}
+## Excersise
+exr
+:::
+
+:::{#sol-SomeSol}
+## Solution
+sol
+:::
+
+:::{#rem-SomeRem}
+## Remark
+rem
+:::
+
+This can be referenced as @thm-SomeThm.
+
+<!-- Content visible in some formats only -->
+
+:::{.content-visible when-format="html"}
+Things that only appear in HTML version.
+:::
+
+:::{.content-visible when-format="pdf"}
+Things that only appear in PDF version.
+:::
+
+:::{.content-visible when-format="docx"}
+Things that only appear in docx version.
+:::
+
+<!-- Figures -->
+
+![Image caption here.  The image is clickable to enlarge.](figures/image.png "Title:  Image of some guy."){width=100% fig-align="center" fig-alt="Alternative caption" #fig-Figure}
+
+In Figure @fig-Figure, there is a figure.
+
+<!-- Coding -->
+
+<!-- Non-Executable code block -->
+
+```python
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+
+<!-- Executable code block -->
+
+```{python}
+#| label: fig-line-plot
+#| fig-cap: "A line plot"
+
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+
+<!-- Referencing -->
+
+Referencing is done similarly to BibTex using @Me2000.

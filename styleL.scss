@@ -1,0 +1,51 @@
+/*-- scss:defaults --*/
+
+$white:   #ffffff !default;
+$ivory:   #f8fafc !default;
+$black:   #000000 !default;
+$blue:    #0501E9 !default;
+$indigo:  #6610f2 !default;
+$purple:  #340154 !default;
+$dpurp:   #19151d !default;
+$pink:    #A52C60 !default;
+$red:     #fa0202 !default;
+$coral:   #CF4446 !default;
+$orange:  #EE6A24 !default;
+$yellow:  #F6D645 !default;
+$green:   #118230 !default;
+$teal:    #068194 !default;
+$cyan:    #3093CF !default;
+
+// Links
+$link-color: $blue;
+$link-decoration: underline;
+$link-hover-color: $red;
+$link-hover-decoration: underline;
+
+// Footer
+$footer-bg: $black;
+
+// Header Navbar
+$navbar-bg: $purple;
+$navbar-fg: $white;
+
+$callout-color-note: $indigo;
+$callout-color-warning: $red;
+$callout-color-important: $coral;
+$callout-color-tip: $green;
+$callout-color-caution: $orange;
+
+:root {
+  --quarto-main-font: "Computer Modern Roman", serif;
+  --quarto-base-font-size: 1rem;
+}
+
+body, .quarto-body {
+  font-family: var(--quarto-main-font) !important;
+  font-size: var(--quarto-base-font-size) !important;
+  line-height: 1.55;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--quarto-main-font) !important;
+}

@@ -1,0 +1,309 @@
+<!-- Elegant Font + Size control card for left sidebar / navbar.
+     Updated to provide three font choices:
+       - Computer Modern Roman (via Latin Modern as web-friendly equivalent)
+       - Calibri (system stack, uses Calibri if installed)
+       - OpenDyslexic (loaded via CDN)
+     Dropdown previews removed as requested and dropdown background forced opaque.
+-->
+
+<!-- Web font sources -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<!-- Latin Modern (Computer Modern-like) and OpenDyslexic from public CDNs -->
+<link href="https://fonts.cdnfonts.com/css/latin-modern-roman" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
+
+<style>
+  :root{
+    --quarto-main-font: "Latin Modern Roman", serif;
+    --quarto-base-font-size: 1rem;
+
+    /* Card and menu backgrounds - menu is opaque */
+    --qfc-card-bg: rgba(255,255,255,0.88);
+    --qfc-menu-bg: #ffffff;               /* opaque menu background (light) */
+
+    --qfc-card-border: rgba(0,0,0,0.06);
+    --qfc-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    --qfc-accent: #0d6efd;
+    --qfc-text: #111;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root{
+      --qfc-card-bg: rgba(24,24,24,0.64);
+      --qfc-menu-bg: #181818;             /* opaque menu background (dark) */
+      --qfc-card-border: rgba(255,255,255,0.06);
+      --qfc-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      --qfc-text: #eee;
+    }
+  }
+
+  .qfc-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+    padding: 0.5rem;
+    border-radius: 10px;
+    background: var(--qfc-card-bg);
+    border: 1px solid var(--qfc-card-border);
+    box-shadow: var(--qfc-shadow);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: var(--qfc-text);
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0.4rem 0;
+  }
+
+  .qfc-row { display:flex; gap:0.45rem; align-items:center; justify-content:space-between; }
+
+  .qfc-label { font-size:0.82rem; opacity:0.9; margin-right:0.4rem; }
+
+  .qfc-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 0.36rem 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    color: inherit;
+    width: 100%;
+    text-align: left;
+    transition: all .12s ease;
+    font-weight: 600;
+  }
+  .qfc-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.04); }
+
+  .qfc-value { display:inline-flex; gap:0.5rem; align-items:center; font-weight:600; }
+
+  .qfc-caret { width:12px; height:12px; opacity:0.9; transform:translateY(1px); }
+
+  .qfc-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 160px;
+    background: var(--qfc-menu-bg);          /* <- opaque background applied here */
+    border: 1px solid var(--qfc-card-border);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    padding: 0.15rem;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    gap: 0.08rem;
+
+    /* prevent backdrop showing through the menu */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .qfc-menu.open { display:flex; }
+
+  .qfc-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0.45rem 0.55rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.92rem;
+  }
+  .qfc-item:hover { background: rgba(0,0,0,0.03); }
+  @media (prefers-color-scheme: dark) {
+    .qfc-item:hover { background: rgba(255,255,255,0.02); }
+  }
+
+  .qfc-check { width:18px; height:18px; display:inline-grid; place-items:center; opacity:0; transition: all .12s; }
+  .qfc-item.active .qfc-check { opacity:1; color: var(--qfc-accent); }
+
+  @media (max-width:420px) {
+    .qfc-card { padding: 0.4rem; border-radius:8px; }
+    .qfc-btn { padding: 0.32rem 0.45rem; }
+  }
+</style>
+
+<script>
+(function () {
+  const FONT_KEY = 'quarto:user:font';
+  const SIZE_KEY = 'quarto:user:font-size';
+  const root = document.documentElement;
+
+  // Fonts: label, CSS family value (no preview)
+  const FONTS = [
+    { id: 'cm', label: 'Computer Modern', css: '"Latin Modern Roman", "Computer Modern", serif' },
+    { id: 'calibri', label: 'Calibri', css: "Calibri, Candara, 'Segoe UI', Roboto, Arial, sans-serif" },
+    { id: 'od', label: 'OpenDyslexic', css: "'OpenDyslexic','Open Dyslexic','OpenDyslexic3', sans-serif" }
+  ];
+
+  const SIZES = [
+    { id: 'small', label: 'Small', css: '0.9rem' },
+    { id: 'medium', label: 'Medium', css: '1rem' },
+    { id: 'large', label: 'Large', css: '1.15rem' }
+  ];
+
+  function setFont(cssVal) {
+    if (!cssVal) return;
+    root.style.setProperty('--quarto-main-font', cssVal);
+    try { localStorage.setItem(FONT_KEY, cssVal); } catch(e){}
+    updateButtonsFromState();
+  }
+  function setSize(cssVal) {
+    if (!cssVal) return;
+    root.style.setProperty('--quarto-base-font-size', cssVal);
+    try { localStorage.setItem(SIZE_KEY, cssVal); } catch(e){}
+    updateButtonsFromState();
+  }
+
+  // Apply saved preferences early
+  try {
+    const savedFont = localStorage.getItem(FONT_KEY);
+    const savedSize = localStorage.getItem(SIZE_KEY);
+    if (savedFont) root.style.setProperty('--quarto-main-font', savedFont);
+    if (savedSize) root.style.setProperty('--quarto-base-font-size', savedSize);
+  } catch (e) {}
+
+  // Build control card
+  const card = document.createElement('div');
+  card.className = 'qfc-card';
+  card.innerHTML = `
+    <div class="qfc-row">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <span class="qfc-label">Font</span>
+          <div style="position:relative; width:100%; max-width:220px;">
+            <button class="qfc-btn" id="qfc-font-btn" aria-haspopup="true" aria-expanded="false" type="button">
+              <span class="qfc-value" id="qfc-font-value">Font</span>
+              <svg class="qfc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="qfc-menu" role="menu" id="qfc-font-menu"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="qfc-row">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <span class="qfc-label">Size</span>
+          <div style="position:relative; width:100%; max-width:120px;">
+            <button class="qfc-btn" id="qfc-size-btn" aria-haspopup="true" aria-expanded="false" type="button">
+              <span class="qfc-value" id="qfc-size-value">Size</span>
+              <svg class="qfc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="qfc-menu" role="menu" id="qfc-size-menu"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  function buildMenu(menuEl, items, type) {
+    menuEl.innerHTML = '';
+    items.forEach(it => {
+      const div = document.createElement('div');
+      div.className = 'qfc-item';
+      div.dataset.value = it.css;
+      div.dataset.id = it.id;
+      div.setAttribute('role','menuitem');
+      div.innerHTML = `<div style="font-weight:600">${it.label}</div><div class="qfc-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6 L9 17l-5-5"/></svg></div>`;
+      div.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (type === 'font') setFont(this.dataset.value);
+        else setSize(this.dataset.value);
+        closeAllMenus();
+      });
+      menuEl.appendChild(div);
+    });
+  }
+
+  const fontMenuEl = card.querySelector('#qfc-font-menu');
+  const sizeMenuEl = card.querySelector('#qfc-size-menu');
+  buildMenu(fontMenuEl, FONTS, 'font');
+  buildMenu(sizeMenuEl, SIZES, 'size');
+
+  function closeAllMenus() {
+    card.querySelectorAll('.qfc-menu').forEach(m => m.classList.remove('open'));
+    card.querySelectorAll('.qfc-btn').forEach(b => b.setAttribute('aria-expanded','false'));
+  }
+  function toggleMenu(btn, menu) {
+    const isOpen = menu.classList.contains('open');
+    closeAllMenus();
+    if (!isOpen) {
+      menu.classList.add('open');
+      btn.setAttribute('aria-expanded','true');
+      const rect = menu.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        menu.style.top = `-${rect.height + 8}px`;
+      } else {
+        menu.style.top = `calc(100% + 8px)`;
+      }
+    }
+  }
+
+  card.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('.qfc-btn');
+    if (!btn) return;
+    const menu = btn.parentNode.querySelector('.qfc-menu');
+    if (menu) toggleMenu(btn, menu);
+  });
+
+  document.addEventListener('click', function (ev) {
+    if (!ev.target.closest('.qfc-card')) closeAllMenus();
+  }, true);
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape') closeAllMenus();
+  });
+
+  function updateButtonsFromState() {
+    const curFont = getComputedStyle(root).getPropertyValue('--quarto-main-font').trim().replace(/(^")|("$)/g,'');
+    const curSize = getComputedStyle(root).getPropertyValue('--quarto-base-font-size').trim();
+    const fontVal = FONTS.find(f => f.css.replace(/["\s]/g,'') === curFont.replace(/["\s]/g,'')) || FONTS[0];
+    const sizeVal = SIZES.find(s => s.css === curSize) || SIZES[1];
+
+    const fontValueEl = card.querySelector('#qfc-font-value');
+    const sizeValueEl = card.querySelector('#qfc-size-value');
+    if (fontValueEl) fontValueEl.textContent = fontVal.label;
+    if (sizeValueEl) sizeValueEl.textContent = sizeVal.label;
+
+    card.querySelectorAll('#qfc-font-menu .qfc-item').forEach(it => {
+      if (it.dataset.value.replace(/\s/g,'') === (fontVal.css || '').replace(/\s/g,'')) it.classList.add('active');
+      else it.classList.remove('active');
+    });
+    card.querySelectorAll('#qfc-size-menu .qfc-item').forEach(it => {
+      if (it.dataset.value === sizeVal.css) it.classList.add('active'); else it.classList.remove('active');
+    });
+  }
+
+  // Insert the control card into the left sidebar / nav top on DOM ready
+  document.addEventListener('DOMContentLoaded', function () {
+    const navSelectors = [
+      '.sidebar .sidebar-nav',
+      '.sidebar .nav',
+      '.sidebar .sidebar-body',
+      '.sidebar',
+      '.book-sidebar',
+      '.sidebar-nav',
+      '.nav'
+    ];
+    let inserted = false;
+    for (const sel of navSelectors) {
+      const el = document.querySelector(sel);
+      if (el && el.insertBefore) {
+        el.insertBefore(card, el.firstChild);
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) {
+      document.body.insertBefore(card, document.body.firstChild);
+    }
+    updateButtonsFromState();
+  });
+
+  window._quartoFontControls = { setFont, setSize };
+})();
+</script>

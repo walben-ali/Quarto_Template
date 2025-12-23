@@ -1,0 +1,11 @@
+<!--- Fonts --->
+
+\newcommand{\B}[1]{\boldsymbol{#1}}
+\newcommand{\mrm}[1]{\mathrm{#1}}
+
+<!--- Sets --->
+
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Rp}{\mathbb{R}_{\geq 0}}
+\newcommand{\NN}{\mathbb{N}}
