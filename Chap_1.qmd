@@ -167,3 +167,7 @@ plt.show()
 <!-- Referencing -->
 
 Referencing is done similarly to BibTex using @Me2000.
+
+<!-- Include External PDF -->
+
+External PDFs can be included by using something like [this](documents/Bedtime.pdf).

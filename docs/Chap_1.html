@@ -127,22 +127,6 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
-<!-- Elegant Font + Size control card for left sidebar / navbar.
-
-     Updated to provide three font choices:
-
-       - Computer Modern Roman (via Latin Modern as web-friendly equivalent)
-
-       - Calibri (system stack, uses Calibri if installed)
-
-       - OpenDyslexic (loaded via CDN)
-
-     Dropdown previews removed as requested and dropdown background forced opaque.
-
--->
-
-
-
 <!-- Web font sources -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1074,7 +1058,7 @@ Caution
 <!-- Content visible in some formats only -->
 <p>Things that only appear in HTML version.</p>
 <!-- Figures -->
-<div id="fig-Figure" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Alternative caption">
+<div id="fig-Figure" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Alternative caption" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-Figure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="figures/image.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;2.1: Image caption here. The image is clickable to enlarge."><img src="figures/image.png" title="Title: Image of some guy." class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Alternative caption"></a>
@@ -1110,6 +1094,8 @@ Figure&nbsp;2.2: A line plot
 </div>
 <!-- Referencing -->
 <p>Referencing is done similarly to BibTex using <span class="citation" data-cites="Me2000">Gump (<a href="#ref-Me2000" role="doc-biblioref">2000</a>)</span>.</p>
+<!-- Include External PDF -->
+<p>External PDFs can be included by using something like <a href="documents/Bedtime.pdf">this</a>.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
@@ -1702,7 +1688,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","closeEffect":"zoom","descPosition":"bottom","loop":false});
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","loop":false,"descPosition":"bottom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
